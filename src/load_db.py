@@ -1,42 +1,41 @@
-import os
+"""Load every cleaned project table into a reproducible SQLite database."""
+from pathlib import Path
+import sqlite3
+
 import pandas as pd
-from sqlalchemy import create_engine
 
-os.makedirs('database', exist_ok=True)
-db_path = os.path.abspath('database/bluestock_mf.db')
-engine = create_engine(f'sqlite:///{db_path}')
+ROOT = Path(__file__).resolve().parents[1]
+PROCESSED = ROOT / "data" / "processed"
+DATABASE = ROOT / "database" / "bluestock_mf.db"
+TABLES = {
+    "cleaned_01_fund_master.csv": "dim_fund",
+    "cleaned_02_nav_history.csv": "fact_nav",
+    "cleaned_03_aum_by_fund_house.csv": "fact_aum_by_fund_house",
+    "cleaned_04_monthly_sip_inflows.csv": "fact_sip_inflows",
+    "cleaned_05_category_inflows.csv": "fact_category_inflows",
+    "cleaned_06_industry_folio_count.csv": "fact_folios",
+    "cleaned_07_scheme_performance.csv": "fact_performance",
+    "cleaned_08_investor_transactions.csv": "fact_transactions",
+    "cleaned_09_portfolio_holdings.csv": "fact_holdings",
+    "cleaned_10_benchmark_indices.csv": "fact_benchmark_indices",
+}
 
-print(f"Connecting to database at: {db_path}")
 
-# Load and explicitly check if files exist and have rows
-nav_file = 'data/processed/clean_nav_history.csv'
-if os.path.exists(nav_file):
-    df_nav = pd.read_csv(nav_file)
-    print(f"NAV rows loaded: {len(df_nav)}")
-    df_nav.to_sql('fact_nav', engine, if_exists='replace', index=False)
-else:
-    print(f"Error: {nav_file} not found!")
+def load_database() -> Path:
+    DATABASE.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(DATABASE) as connection:
+        for filename, table in TABLES.items():
+            source = PROCESSED / filename
+            if not source.exists():
+                raise FileNotFoundError(f"Missing processed input: {source}")
+            frame = pd.read_csv(source)
+            frame.to_sql(table, connection, if_exists="replace", index=False)
+            if frame.empty:
+                raise ValueError(f"Loaded table is empty: {table}")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_nav_code_date ON fact_nav(amfi_code, date)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_transactions_date ON fact_transactions(transaction_date)")
+    return DATABASE
 
-perf_file = 'data/processed/clean_scheme_performance.csv'
-if os.path.exists(perf_file):
-    df_perf = pd.read_csv(perf_file)
-    print(f"Performance rows loaded: {len(df_perf)}")
-    df_perf.to_sql('fact_performance', engine, if_exists='replace', index=False)
-else:
-    print(f"Error: {perf_file} not found!")
 
-trans_file = 'data/processed/clean_investor_transactions.csv'
-if os.path.exists(trans_file):
-    df_trans = pd.read_csv(trans_file)
-    print(f"Transaction rows loaded: {len(df_trans)}")
-    df_trans.to_sql('fact_transactions', engine, if_exists='replace', index=False)
-else:
-    print(f"Error: {trans_file} not found!")
-
-# Verify tables inside database
-with engine.connect() as conn:
-    result = pd.read_sql("SELECT name FROM sqlite_master WHERE type='table';", conn)
-    print("\nTables currently in database:")
-    print(result)
-
-print("\nDatabase loading script finished!")
+if __name__ == "__main__":
+    print(f"Loaded SQLite database: {load_database()}")

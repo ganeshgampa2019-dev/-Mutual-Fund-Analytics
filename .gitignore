@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*.db
+.ipynb_checkpoints/
+bluestock_mf_dashboard_project/1_Source_File/*.pbix

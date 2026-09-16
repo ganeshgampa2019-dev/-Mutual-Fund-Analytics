@@ -1,0 +1,11 @@
+amfi_code,scheme_name,category,fund_house,return_1yr_pct,return_3yr_pct,return_5yr_pct,sharpe_ratio,risk_grade
+101207,ABSL Small Cap Fund - Regular - Growth,Small Cap,Aditya Birla Sun Life MF,24.93,22.38,23.8,0.9,Very High
+119598,SBI Small Cap Fund - Regular Plan - Growth,Small Cap,SBI Mutual Fund,24.56,23.39,20.67,0.94,Very High
+119095,Axis Small Cap Fund - Regular - Growth,Small Cap,Axis Mutual Fund,21.97,20.98,22.62,0.84,Very High
+118634,Nippon India Small Cap Fund - Regular - Growth,Small Cap,Nippon India MF,21.3,20.15,21.88,0.81,Very High
+119599,SBI Small Cap Fund - Direct Plan - Growth,Small Cap,SBI Mutual Fund,20.59,23.14,21.82,0.93,Very High
+149324,DSP Small Cap Fund - Regular - Growth,Small Cap,DSP Mutual Fund,20.2,20.08,20.61,0.8,Very High
+125498,HDFC Mid-Cap Opportunities Fund - Direct - Growth,Mid Cap,HDFC Mutual Fund,19.98,15.29,15.85,0.8,High
+102887,UTI Flexi Cap Fund - Regular - Growth,Flexi Cap,UTI Mutual Fund,17.43,15.34,15.78,0.96,Moderately High
+120842,Kotak Emerging Equity Fund - Regular - Growth,Mid Cap,Kotak Mahindra MF,17.12,18.23,17.75,0.96,High
+120506,ICICI Pru Value Discovery Fund - Regular - Growth,Value,ICICI Prudential MF,16.67,14.76,12.6,0.98,Moderately High
